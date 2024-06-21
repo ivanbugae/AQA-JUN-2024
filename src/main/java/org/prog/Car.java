@@ -1,14 +1,39 @@
 package org.prog;
 
-public class Car {
+public class Car implements ITransport {
 
-    public String color;
+    private String color;
     public int milage = 0;
 
-    // TODO: add parameter that indicates distance car travels
     public void goTo() {
         milage += 10;
-        System.out.println(color + " car goes somewhere!");
-        System.out.println(color + " car current milage is now " + milage);
+        goTo("somewhere");
+    }
+
+    public void goTo(String destination) {
+        goTo("current city", destination);
+    }
+
+    public void goTo(String from, String destination) {
+        goTo(from, destination, "nowhere");
+    }
+
+    public void goTo(String from, String destination, String passingThrough) {
+        System.out.println("Car is going from " + from + " to "
+                + destination + " stopping at " + passingThrough);
+    }
+
+    public void turn(String direction) {
+        System.out.println(color + " car turns " + direction);
+    }
+
+    public void setColor(String newColor) {
+        if (newColor != null) {
+            color = newColor;
+        }
+    }
+
+    public String getColor() {
+        return color;
     }
 }
