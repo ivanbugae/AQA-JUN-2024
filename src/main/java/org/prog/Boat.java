@@ -9,6 +9,11 @@ public class Boat implements ITransport {
         System.out.println("Boat turns " + direction);
     }
 
+    @Override
+    public void stopAt(String stop) {
+
+    }
+
     public void setSail() {
         System.out.println("Set sail!");
     }

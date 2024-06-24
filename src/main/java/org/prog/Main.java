@@ -21,15 +21,29 @@ public class Main {
 
 
     public static void main(String[] args) {
-//        Car car1 = new Car();
-//        Truck truck1 = new Truck();
-//        BigTruck bigTruck = new BigTruck();
-//        BiggestTruck biggestTruck = new BiggestTruck();
-//
-//        car1.setColor("Red");
-//        truck1.setColor("white");
-//        bigTruck.setColor("black");
-//        biggestTruck.setColor("yellow");
+       Car car1 = new Car();
+       Truck truck1 = new Truck();
+       BigTruck bigTruck = new BigTruck();
+       BiggestTruck biggestTruck = new BiggestTruck();
+
+       car1.setColor("Red");
+       truck1.setColor("white");
+       bigTruck.setColor("black");
+       biggestTruck.setColor("yellow");
+       car1.milage=150;
+       truck1.milage=100;
+       bigTruck.milage=200;
+       biggestTruck.milage=300;
+        System.out.println(car1);
+        System.out.println(truck1);
+        System.out.println(car1.equals(truck1));
+        System.out.println(car1.hashCode());
+        System.out.println(truck1.hashCode());
+        System.out.println(bigTruck);
+        System.out.println(biggestTruck);
+        System.out.println(bigTruck.equals(biggestTruck));
+        System.out.println(bigTruck.hashCode());
+        System.out.println(biggestTruck.hashCode());
 //
 //        car1.goTo();
 //        car1.goTo("Kyiv");
