@@ -29,5 +29,15 @@ public class MapsPractice {
         ownedCars.get(owner3).add(new Car());
         System.out.println(ownedCars.get(owner1).size());
         //TODO: HW4 starts here
-    }
+        for(String key: ownedCars.keySet()){
+        for (Car value : ownedCars.get(key)){
+            if(value.getColor()==null){
+                value.setColor("Black");
+            }
+        }  }
+        for(String key: ownedCars.keySet()){
+            for (Car value : ownedCars.get(key)){
+                System.out.println(key+" has a "+value.getColor()+" car");
+            }  }
 }
+    }
