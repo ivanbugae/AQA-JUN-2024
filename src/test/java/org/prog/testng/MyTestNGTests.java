@@ -1,28 +1,29 @@
 package org.prog.testng;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.prog.driver.WedDriverFactory;
+import org.prog.page.GooglePage;
+import org.prog.page.ImdbPage;
+import org.prog.page.WikiPage;
+import org.testng.Assert;
 import org.testng.annotations.*;
-
-import java.time.Duration;
-import java.util.List;
 
 public class MyTestNGTests {
 
-    private final static String COOKIE_LINK_XPATH = "//a[contains(@href, 'cookies')]";
-    private final static String COOKIE_BTNS_SUFFIX_XPATH = "/../../../..//button";
 
     private WebDriver driver;
 
+    private GooglePage googlePage;
+    private WikiPage wikiPage;
+    private ImdbPage imdbPage;
 
     @BeforeSuite
     public void setUp() {
-        driver = new ChromeDriver();
+        driver = WedDriverFactory.getDriver();
+        googlePage = new GooglePage(driver);
+        wikiPage = new WikiPage(driver);
+        imdbPage = new ImdbPage(driver);
     }
 
     @AfterSuite
@@ -34,41 +35,43 @@ public class MyTestNGTests {
 
     @BeforeMethod
     public void reloadGooglePage() {
-        driver.get("about:blank");
-        driver.get("https://google.com/");
-
-        List<WebElement> cookieLink =
-                driver.findElements(By.xpath(COOKIE_LINK_XPATH));
-        if (!cookieLink.isEmpty()) {
-            List<WebElement> cookieFormButtons = driver.findElements(
-                    By.xpath(COOKIE_LINK_XPATH + COOKIE_BTNS_SUFFIX_XPATH));
-            cookieFormButtons.get(3).click();
-        }
+        googlePage.loadPage();
+        googlePage.acceptCookieIfPresent();
     }
+
+    //google-dev.com
+    //google-it.com
+    //google-preprod.com
 
     @Test(dataProvider = "celebrityNames")
     public void mtNGTest1(String celebrityName, String additionalInfo) {
         System.out.println(additionalInfo);
-        WebElement searchBox = driver.findElement(By.name("q"));
-        searchBox.sendKeys(celebrityName);
-        searchBox.sendKeys(Keys.ENTER);
 
-        WebDriverWait driverWait = new WebDriverWait(driver, Duration.ofSeconds(30L));
-
-        List<WebElement> searchHeaders =
-                driverWait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.tagName("h3"), 2));
+        googlePage.setSearchValue(celebrityName);
+        googlePage.executeSearch();
 
         int searchCounter = 0;
-        for (WebElement header : searchHeaders) {
+        for (WebElement header : googlePage.getSearchHeaders()) {
             if (header.getText().toUpperCase().contains(celebrityName.toUpperCase())) {
                 searchCounter++;
             }
         }
 
-        if (searchCounter > 2) {
-            System.out.println(celebrityName + " found in Google!");
+        Assert.assertTrue(searchCounter > 2,
+                "Search count of google results expected to be more than 2, but was " + searchCounter);
+    }
+
+    @Test(dataProvider = "celebrityNames")
+    public void feelingLuckyTest(String celebrityName, String additionalInfo) {
+        System.out.println(additionalInfo);
+
+        googlePage.setSearchValue(celebrityName);
+        googlePage.feelingLucky();
+
+        if ("Ben Affleck".equals(celebrityName)) {
+            Assert.assertTrue(wikiPage.getPageUrl().contains("wiki"));
         } else {
-            throw new RuntimeException(celebrityName + " not found!");
+            Assert.assertTrue(imdbPage.getPageUrl().contains("imdb"));
         }
     }
 
