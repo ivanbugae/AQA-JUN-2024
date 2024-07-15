@@ -1,0 +1,16 @@
+{
+  "car": {
+    "model": "6",
+    "brand": "mazda",
+    "color": "red",
+    "engine": {
+      "volume": "2.0",
+      "type": "diesel"
+    }
+  },
+  "motorbike" : {
+    "model": "n/a",
+    "brand": "suzuki",
+    "color": "white"
+  }
+}

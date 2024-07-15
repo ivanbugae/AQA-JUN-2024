@@ -5,6 +5,7 @@ import org.openqa.selenium.WebElement;
 import org.prog.driver.WedDriverFactory;
 import org.prog.page.GooglePage;
 import org.prog.page.ImdbPage;
+import org.prog.page.W3Schoolspage;
 import org.prog.page.WikiPage;
 import org.testng.Assert;
 import org.testng.annotations.*;
@@ -17,6 +18,7 @@ public class MyTestNGTests {
     private GooglePage googlePage;
     private WikiPage wikiPage;
     private ImdbPage imdbPage;
+    private W3Schoolspage w3Schoolspage;
 
     @BeforeSuite
     public void setUp() {
@@ -24,6 +26,7 @@ public class MyTestNGTests {
         googlePage = new GooglePage(driver);
         wikiPage = new WikiPage(driver);
         imdbPage = new ImdbPage(driver);
+        w3Schoolspage = new W3Schoolspage(driver);
     }
 
     @AfterSuite
@@ -43,7 +46,7 @@ public class MyTestNGTests {
     //google-it.com
     //google-preprod.com
 
-    @Test(dataProvider = "celebrityNames")
+    //    @Test(dataProvider = "celebrityNames")
     public void mtNGTest1(String celebrityName, String additionalInfo) {
         System.out.println(additionalInfo);
 
@@ -61,7 +64,7 @@ public class MyTestNGTests {
                 "Search count of google results expected to be more than 2, but was " + searchCounter);
     }
 
-    @Test(dataProvider = "celebrityNames")
+    //    @Test(dataProvider = "celebrityNames")
     public void feelingLuckyTest(String celebrityName, String additionalInfo) {
         System.out.println(additionalInfo);
 
@@ -73,6 +76,13 @@ public class MyTestNGTests {
         } else {
             Assert.assertTrue(imdbPage.getPageUrl().contains("imdb"));
         }
+    }
+
+    @Test
+    public void testIframe() {
+        w3Schoolspage.loadPage();
+        w3Schoolspage.acceptCookies();
+        w3Schoolspage.iframeMethod();
     }
 
     @DataProvider
