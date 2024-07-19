@@ -10,6 +10,8 @@ import org.prog.page.WikiPage;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
+import java.sql.*;
+
 public class MyTestNGTests {
 
 
@@ -20,17 +22,23 @@ public class MyTestNGTests {
     private ImdbPage imdbPage;
     private W3Schoolspage w3Schoolspage;
 
+    private Connection connection;
+    private Statement statement;
+    private ResultSet resultSet;
+
     @BeforeSuite
-    public void setUp() {
+    public void setUp() throws SQLException, ClassNotFoundException {
         driver = WedDriverFactory.getDriver();
         googlePage = new GooglePage(driver);
         wikiPage = new WikiPage(driver);
         imdbPage = new ImdbPage(driver);
         w3Schoolspage = new W3Schoolspage(driver);
+        connectToDB();
     }
 
     @AfterSuite
-    public void tearDown() {
+    public void tearDown() throws SQLException {
+        closeConnection();
         if (driver != null) {
             driver.quit();
         }
@@ -42,26 +50,21 @@ public class MyTestNGTests {
         googlePage.acceptCookieIfPresent();
     }
 
-    //google-dev.com
-    //google-it.com
-    //google-preprod.com
-
-    //    @Test(dataProvider = "celebrityNames")
-    public void mtNGTest1(String celebrityName, String additionalInfo) {
-        System.out.println(additionalInfo);
-
-        googlePage.setSearchValue(celebrityName);
+    @Test(dataProvider = "attempt")
+    public void mtNGTest1(String attemptCount) throws SQLException {
+        String randomName = getRandomFirstLastName();
+        googlePage.setSearchValue(randomName);
         googlePage.executeSearch();
 
         int searchCounter = 0;
         for (WebElement header : googlePage.getSearchHeaders()) {
-            if (header.getText().toUpperCase().contains(celebrityName.toUpperCase())) {
+            if (header.getText().toUpperCase().contains(randomName.toUpperCase())) {
                 searchCounter++;
             }
         }
 
         Assert.assertTrue(searchCounter > 2,
-                "Search count of google results expected to be more than 2, but was " + searchCounter);
+                "Search count of google results expected to be more than 2, but was " + searchCounter + " attempt #" + attemptCount);
     }
 
     //    @Test(dataProvider = "celebrityNames")
@@ -78,7 +81,7 @@ public class MyTestNGTests {
         }
     }
 
-    @Test
+    //    @Test
     public void testIframe() {
         w3Schoolspage.loadPage();
         w3Schoolspage.acceptCookies();
@@ -86,10 +89,42 @@ public class MyTestNGTests {
     }
 
     @DataProvider
-    public Object[][] celebrityNames() {
+    public Object[][] attempt() {
         return new Object[][]{
-                {"Ben Affleck", "Looking for Ben"},
-                {"Margot Robbie", "Looking for Margot"}
+                {"1"},
+                {"2"},
+                {"3"},
+                {"4"},
+                {"5"}
         };
+    }
+
+    private String getRandomFirstLastName() throws SQLException {
+        try {
+            resultSet = statement.executeQuery("SELECT * from Persons p ORDER BY rand() LIMIT 1");
+            resultSet.next();
+            return resultSet.getString("FirstName") + " " + resultSet.getString("LastName");
+        } finally {
+            resultSet.close();
+        }
+    }
+
+    private void connectToDB() throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        connection = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/db", "user", "password");
+        statement = connection.createStatement();
+    }
+
+    private void closeConnection() throws SQLException {
+        if (resultSet != null) {
+            resultSet.close();
+        }
+        if (statement != null) {
+            statement.close();
+        }
+        if (connection != null) {
+            connection.close();
+        }
     }
 }
