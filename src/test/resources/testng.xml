@@ -2,7 +2,7 @@
 <suite name="Suite1" verbose="1">
     <test name="regression1">
         <classes>
-            <class name="org.prog.testng.MyTestNGTests"/>
+            <class name="org.prog.cucumber.CucumberRunner"/>
         </classes>
     </test>
 </suite>
