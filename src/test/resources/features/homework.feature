@@ -7,3 +7,4 @@ Feature: HW 9
 #  4.1. If phone IS in DB > check its price, if it changed > update price and fail test
 #  4.2. If phone IS NOT in DB > store price, and fail test
 #  MAKE IT PARAMETRZIED FOR 3 DIFFERENT PHONES: iPhone, Samsung, Xiaomi
+
